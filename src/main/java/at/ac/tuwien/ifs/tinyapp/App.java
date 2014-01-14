@@ -8,8 +8,6 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import at.ac.tuwien.ifs.tinyapp.cli.CommandLineController;
-
 /**
  * Hello world!
  * 
