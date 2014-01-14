@@ -43,6 +43,10 @@ public class App {
             }
         }
 
+        CommandLineController cli = context.getBean(CommandLineController.class);
+
+        LOG.info("Starting CommandLineController Thread");
+        new Thread(cli).start();
     }
 
 }
