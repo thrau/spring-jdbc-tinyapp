@@ -4,7 +4,7 @@ Spring JDBC Tinyapp
 This is a sample application that demonstrates various aspects of spring-jdbc, and how Spring helps you with JDBC heavy
 code and tests.
 
-The application uses HSQLDB for demonstration purposes.
+The application uses [HSQLDB](http://hsqldb.org/) for demonstration purposes.
 
 ## Building
 
