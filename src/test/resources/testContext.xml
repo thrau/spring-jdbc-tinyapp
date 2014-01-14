@@ -12,7 +12,7 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="at.ac.tuwien.ifs.tinyapp.*"/>
+    <context:component-scan base-package="at.ac.tuwien.ifs.tinyapp"/>
 
     <bean id="jdbc" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>

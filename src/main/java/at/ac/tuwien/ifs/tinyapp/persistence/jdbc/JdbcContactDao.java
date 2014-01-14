@@ -23,7 +23,7 @@ import at.ac.tuwien.ifs.tinyapp.persistence.EntityNotFoundException;
 import at.ac.tuwien.ifs.tinyapp.persistence.PersistenceException;
 
 /**
- * JdbcContactDao
+ * A JDBC variant of a Contact repository.
  */
 @Repository
 public class JdbcContactDao implements ContactDao {
@@ -57,6 +57,7 @@ public class JdbcContactDao implements ContactDao {
 
         try {
             jdbc.update("DELETE FROM CONTACTS WHERE ID = ?", contact.getId());
+            contact.setId(null);
         } catch (DataAccessException e) {
             throw new PersistenceException("Could not remove contact with id " + contact.getId(), e);
         }
@@ -64,20 +65,11 @@ public class JdbcContactDao implements ContactDao {
 
     @Override
     public List<Contact> find(Contact template) throws PersistenceException {
-        StringBuilder sql = new StringBuilder("SELECT * FROM");
-        Map<String, Object> values = new HashMap<>();
-
-        if (template.getFirstName() != null) {
-            values.put("FIRST_NAME", template.getFirstName());
+        try {
+            return new ContactByTemplateQuery(template).execute();
+        } catch (DataAccessException e) {
+            throw new PersistenceException("Could not query contacts with template " + template, e);
         }
-        if (template.getLastName() != null) {
-            values.put("LAST_NAME", template.getLastName());
-        }
-        if (template.getEmail() != null) {
-            values.put("EMAIL", template.getEmail());
-        }
-
-        throw new UnsupportedOperationException("Can't yet find contacts by template");
     }
 
     @Override
@@ -97,7 +89,7 @@ public class JdbcContactDao implements ContactDao {
         }
     }
 
-    private void update(Contact contact) throws PersistenceException {
+    protected void update(Contact contact) throws PersistenceException {
         assertContactId(contact);
 
         String sql = "UPDATE CONTACTS SET FIRST_NAME = ?, LAST_NAME = ?, EMAIL = ? WHERE ID = ?";
@@ -109,8 +101,8 @@ public class JdbcContactDao implements ContactDao {
         }
     }
 
-    private void create(Contact contact) throws PersistenceException {
-        Map<String, Object> values = new ContactValueMap(contact);
+    protected void create(Contact contact) throws PersistenceException {
+        Map<String, Object> values = new ContactParameterMap(contact);
 
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbc).withTableName("CONTACTS").usingGeneratedKeyColumns("ID");
 
@@ -122,7 +114,7 @@ public class JdbcContactDao implements ContactDao {
         }
     }
 
-    private static void assertId(Long id) throws PersistenceException {
+    protected static void assertId(Long id) throws PersistenceException {
         String msg;
         if (id == null) {
             msg = "Contact ID is null";
@@ -135,7 +127,7 @@ public class JdbcContactDao implements ContactDao {
         throw new IllegalArgumentException(msg);
     }
 
-    private static void assertContactId(Contact contact) throws PersistenceException {
+    protected static void assertContactId(Contact contact) throws PersistenceException {
         String msg;
         if (contact == null) {
             msg = "Contact is null";
@@ -150,8 +142,8 @@ public class JdbcContactDao implements ContactDao {
         throw new IllegalArgumentException(msg);
     }
 
-    private static class ContactValueMap extends HashMap<String, Object> {
-        public ContactValueMap(Contact contact) {
+    private static class ContactParameterMap extends HashMap<String, Object> {
+        public ContactParameterMap(Contact contact) {
             put("ID", contact.getId());
             put("FIRST_NAME", contact.getFirstName());
             put("LAST_NAME", contact.getLastName());
@@ -176,6 +168,10 @@ public class JdbcContactDao implements ContactDao {
         }
     }
 
+    /**
+     * Nested implementation of Spring's MappingSqlQuery typed for Contact entities. Uses the DataSource from the
+     * JdbcTemplate and the ContactRowMapper set in the JdbcContactDao.
+     */
     private abstract class AbstractContactQuery extends MappingSqlQuery<Contact> {
         public AbstractContactQuery() {
             super();
@@ -206,8 +202,9 @@ public class JdbcContactDao implements ContactDao {
     }
 
     /**
-     * Unfortunately Spring JDBC does not have facilities for building where clauses (like the JPA CriteriaBuilder). So
-     * we have to emulate something like it.
+     * Unfortunately Spring JDBC does not have facilities for dynamically building where clauses (like the JPA
+     * CriteriaBuilder). So we have to emulate something like it. This will be a magnitude more complex for larger
+     * entities, joins or inheritance.
      * 
      * @link http://stackoverflow.com/questions/6088944/spring-jdbctemplate-dynamic-where-clause
      */
@@ -244,6 +241,7 @@ public class JdbcContactDao implements ContactDao {
                 return sql.toString();
             }
 
+            sql.append(" WHERE ");
             // conjugate the predicates
             joinPredicates(sql, predicates);
 
@@ -252,7 +250,13 @@ public class JdbcContactDao implements ContactDao {
 
         @Override
         public List<Contact> execute() throws DataAccessException {
-            return super.execute(new ContactValueMap(template));
+            return super.executeByNamedParam(new ContactParameterMap(template));
+        }
+
+        @Override
+        protected boolean allowsUnusedParameters() {
+            // because the ContactParameterMap contains all Contact properties, but the query might not
+            return true;
         }
 
         private void joinPredicates(StringBuilder sql, List<String> predicates) {
