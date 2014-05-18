@@ -19,3 +19,6 @@ bin/
 
 # backup-files
 *~
+
+# hsqldb files
+tinyappdb.*
