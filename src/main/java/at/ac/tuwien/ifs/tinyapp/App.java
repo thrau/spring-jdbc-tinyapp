@@ -10,15 +10,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * Hello world!
- * 
  */
 public class App {
 
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
-    public static final String[] configs = {
-        "applicationContext.xml"
-    };
+    public static final String[] configs = { "applicationContext.xml" };
 
     public static ApplicationContext context;
 
@@ -40,6 +37,8 @@ public class App {
                 throw e;
             }
         }
+
+        // TODO: demonstrate something useful
 
     }
 
