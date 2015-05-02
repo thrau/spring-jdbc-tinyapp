@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 /**
  * Hello world!
@@ -28,10 +29,9 @@ public class App {
         try {
             context = new ClassPathXmlApplicationContext(configs);
         } catch (BeanCreationException e) {
-            if (e.contains(ConnectException.class)) { // obviously this is only valid for our example
-                System.err.println("Could not connect to database, is the database server running? The exception was: "
-                        + e.getMessage());
-                System.err.println("\nYou can start the server from the command line using `mvn exec:java -Ddatabase`");
+            if (e.contains(ConnectException.class) || e.contains(CannotGetJdbcConnectionException.class)) {
+                // obviously this is only valid for our example
+                System.err.println("Could not connect to database. The exception was: " + e.getMessage());
                 System.exit(1);
             } else {
                 throw e;

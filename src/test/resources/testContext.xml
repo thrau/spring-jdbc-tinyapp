@@ -19,7 +19,7 @@
   </bean>
 
   <!-- Spring JDBC Utility for in-memory database -->
-  <jdbc:embedded-database id="dataSource" type="HSQL">
+  <jdbc:embedded-database id="dataSource" type="H2">
     <jdbc:script location="classpath:database-schema.sql"/>
     <jdbc:script location="classpath:database-testdata.sql"/>
   </jdbc:embedded-database>

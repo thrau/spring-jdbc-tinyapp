@@ -53,7 +53,7 @@ public class JdbcContactDaoTest {
         assertEquals(5, dao.count());
 
         Contact c = new Contact();
-        c.setId(0L);
+        c.setId(1L);
         dao.delete(c);
 
         assertEquals(4, dao.count());
@@ -93,7 +93,7 @@ public class JdbcContactDaoTest {
 
         dao.save(c);
 
-        assertEquals(new Long(5), c.getId());
+        assertEquals(new Long(6), c.getId());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class JdbcContactDaoTest {
         Contact contact;
 
         contact = iterator.next();
-        assertEquals(new Long(4), contact.getId());
+        assertEquals(new Long(5), contact.getId());
         assertEquals("Galvin", contact.getFirstName());
         assertEquals("Colon", contact.getLastName());
         assertEquals("pede.et.risus@Aliquam.ca", contact.getEmail());
@@ -131,13 +131,13 @@ public class JdbcContactDaoTest {
         Contact contact;
 
         contact = iterator.next();
-        assertEquals(new Long(2), contact.getId());
+        assertEquals(new Long(3), contact.getId());
         assertEquals("Sierra", contact.getFirstName());
         assertEquals("Conway", contact.getLastName());
         assertEquals("Mauris.quis@dolor.edu", contact.getEmail());
 
         contact = iterator.next();
-        assertEquals(new Long(4), contact.getId());
+        assertEquals(new Long(5), contact.getId());
         assertEquals("Galvin", contact.getFirstName());
         assertEquals("Colon", contact.getLastName());
         assertEquals("pede.et.risus@Aliquam.ca", contact.getEmail());
@@ -153,31 +153,31 @@ public class JdbcContactDaoTest {
         Contact contact;
 
         contact = iterator.next();
-        assertEquals(new Long(0), contact.getId());
+        assertEquals(new Long(1), contact.getId());
         assertEquals("Cassidy", contact.getFirstName());
         assertEquals("Brewer", contact.getLastName());
         assertEquals("vel@sapien.org", contact.getEmail());
 
         contact = iterator.next();
-        assertEquals(new Long(1), contact.getId());
+        assertEquals(new Long(2), contact.getId());
         assertEquals("Hakeem", contact.getFirstName());
         assertEquals("French", contact.getLastName());
         assertEquals("magna.Cras@Nulla.net", contact.getEmail());
 
         contact = iterator.next();
-        assertEquals(new Long(2), contact.getId());
+        assertEquals(new Long(3), contact.getId());
         assertEquals("Sierra", contact.getFirstName());
         assertEquals("Conway", contact.getLastName());
         assertEquals("Mauris.quis@dolor.edu", contact.getEmail());
 
         contact = iterator.next();
-        assertEquals(new Long(3), contact.getId());
+        assertEquals(new Long(4), contact.getId());
         assertEquals("Ursula", contact.getFirstName());
         assertEquals("Palmer", contact.getLastName());
         assertEquals("Donec@Fuscealiquam.com", contact.getEmail());
 
         contact = iterator.next();
-        assertEquals(new Long(4), contact.getId());
+        assertEquals(new Long(5), contact.getId());
         assertEquals("Galvin", contact.getFirstName());
         assertEquals("Colon", contact.getLastName());
         assertEquals("pede.et.risus@Aliquam.ca", contact.getEmail());
@@ -197,9 +197,9 @@ public class JdbcContactDaoTest {
 
     @Test
     public void findById_returnsCorrectEntry() throws Exception {
-        Contact contact = dao.findById(4L);
+        Contact contact = dao.findById(5L);
 
-        assertEquals(new Long(4), contact.getId());
+        assertEquals(new Long(5), contact.getId());
         assertEquals("Galvin", contact.getFirstName());
         assertEquals("Colon", contact.getLastName());
         assertEquals("pede.et.risus@Aliquam.ca", contact.getEmail());
@@ -207,15 +207,15 @@ public class JdbcContactDaoTest {
 
     @Test
     public void findById_afterUpdate_returnsUpdatedEntry() throws Exception {
-        Contact contact = dao.findById(4L);
+        Contact contact = dao.findById(5L);
         contact.setLastName(null);
         contact.setEmail("foobar@example.com");
 
         dao.save(contact);
 
-        contact = dao.findById(4L);
+        contact = dao.findById(5L);
 
-        assertEquals(new Long(4), contact.getId());
+        assertEquals(new Long(5), contact.getId());
         assertEquals("Galvin", contact.getFirstName());
         assertEquals(null, contact.getLastName());
         assertEquals("foobar@example.com", contact.getEmail());
