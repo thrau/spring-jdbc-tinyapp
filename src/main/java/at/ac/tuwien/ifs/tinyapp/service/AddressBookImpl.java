@@ -9,9 +9,6 @@ import at.ac.tuwien.ifs.tinyapp.domain.Contact;
 import at.ac.tuwien.ifs.tinyapp.persistence.ContactDao;
 import at.ac.tuwien.ifs.tinyapp.persistence.PersistenceException;
 
-/**
- * AddressBook
- */
 @Service
 public class AddressBookImpl implements AddressBook {
 

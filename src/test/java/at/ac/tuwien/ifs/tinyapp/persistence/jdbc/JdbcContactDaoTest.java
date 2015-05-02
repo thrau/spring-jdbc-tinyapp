@@ -17,7 +17,9 @@ import at.ac.tuwien.ifs.tinyapp.domain.Contact;
 import at.ac.tuwien.ifs.tinyapp.persistence.EntityNotFoundException;
 
 /**
- * JdbcContactDaoTest
+ * This test is executed using the SpringJUnit4ClassRunner instead of the default junit runner. This allows dependency
+ * injection from the Spring application context. Note that the testContext.xml is only seen in the classpath in the
+ * test scope.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:testContext.xml" })

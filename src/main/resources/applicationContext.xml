@@ -18,11 +18,13 @@
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" lazy-init="true">
     <property name="driverClass" value="org.h2.Driver"/>
+    <!-- #{systemProperties['user.dir']} provides access to the current working directory of the execution -->
     <property name="url" value="jdbc:h2:#{systemProperties['user.dir']}/tinyappdb"/>
     <property name="username" value="sa"/>
     <property name="password" value=""/>
   </bean>
 
+  <!-- spring utiltity to execute a sql script on a given data source -->
   <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
     <jdbc:script location="classpath:database-schema.sql"/>
   </jdbc:initialize-database>
